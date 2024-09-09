@@ -1,4 +1,4 @@
-name: Nomads CI/CD
+name: Deploy Server Production
 
 on:
   push:
