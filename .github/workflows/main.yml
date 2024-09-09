@@ -47,4 +47,4 @@ jobs:
       - name: Deploy to Development
         env:
           DOT_ENV: ${{ secrets.DOT_ENV_PRODUCTION }}
-        run: php vendor/bin/dep deploy NAMA_REMOTE_HOST branch=master
+        run: php vendor/bin/dep deploy serverHafidan branch=master
