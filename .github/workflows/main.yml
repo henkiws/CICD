@@ -1,29 +1,50 @@
-name: Deploy Laravel Project on push
 on:
   push:
     branches:
       - master
+
 jobs:
-  web-deploy:
-    name: Deploy
+  build-js-production:
+    name: Build JavaScript/CSS for Production Server
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
-      - name: Get the latest code
-        uses: actions/checkout@v2.3.2
-      - uses: actions/setup-node@master
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Install Dependencies
-        run: composer update --ignore-platform-reqs
-      - name: Generate key
-        run: php artisan key:generate
-      - name: Generate storage link
-        run: php artisan storage:link
-      - name: Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - uses: actions/checkout@v1
+      - name: NPM Build
+        run: |
+          npm install
+          npm run build
+      - name: Put built assets in Artifacts
+        uses: actions/upload-artifact@v1
         with:
-          server: ${{ secrets.FTP_SERVERS}}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.YOUR_PASSWORD }}
+          name: assets
+          path: public
+          retention-days: 3
+  deploy-production:
+    name: Deploy Project to Production Server
+    runs-on: ubuntu-latest
+    needs: [ build-js-production ]
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Fetch built assets from Artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: assets
+          path: public
+      - name: Setup PHP
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: '8.0'
+          extension-csv: mbstring, bcmath
+      - name: Composer install
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Setup Deployer
+        uses: atymic/deployer-php-action@master
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+      - name: Deploy to Development
+        env:
+          DOT_ENV: ${{ secrets.DOT_ENV_PRODUCTION }}
+        run: php vendor/bin/dep deploy NAMA_REMOTE_HOST branch=master

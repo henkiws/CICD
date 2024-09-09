@@ -34,7 +34,7 @@ add('writable_dirs', [
 set('composer_options', '--verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader');
 
 // Hosts
-host('NAMA_REMOTE_HOST') // Nama remote host server ssh anda | contoh host('NAMA_REMOTE_HOST')
+host('serverHafidan') // Nama remote host server ssh anda | contoh host('NAMA_REMOTE_HOST')
 ->setHostname('139.59.225.77') // Hostname atau IP address server anda | contoh  ->setHostname('10.10.10.1') 
 ->set('remote_user', 'henki') // SSH user server anda | contoh ->set('remote_user', 'u1234567')
 ->set('port', 22) // SSH port server anda, untuk kasus ini server yang saya gunakan menggunakan port custom | contoh ->set('remote_user', 65002)
