@@ -36,10 +36,10 @@ set('composer_options', '--verbose --prefer-dist --no-progress --no-interaction 
 // Hosts
 host('serverHafidan') // Nama remote host server ssh anda | contoh host('NAMA_REMOTE_HOST')
 ->setHostname('139.59.225.77') // Hostname atau IP address server anda | contoh  ->setHostname('10.10.10.1') 
-->set('remote_user', 'henki') // SSH user server anda | contoh ->set('remote_user', 'u1234567')
+->set('remote_user', 'root') // SSH user server anda | contoh ->set('remote_user', 'u1234567')
 ->set('port', 22) // SSH port server anda, untuk kasus ini server yang saya gunakan menggunakan port custom | contoh ->set('remote_user', 65002)
 ->set('branch', 'master') // Git branch anda
-->set('deploy_path', '~/var/www/dev.hafidan.my.id'); // Lokasi untuk menyimpan projek laravel pada server | contoh ->set('deploy_path', '~/public_html/api-deploy');
+->set('deploy_path', '/var/www/dev.hafidan.my.id'); // Lokasi untuk menyimpan projek laravel pada server | contoh ->set('deploy_path', '~/public_html/api-deploy');
 
 
 
